@@ -1,6 +1,7 @@
 from requests import get
 from bs4 import BeautifulSoup as bs
-import json
+# import json
+import database_config as dc
 
 
 class Fumpnews():
@@ -15,30 +16,14 @@ class Fumpnews():
         self.last_page = int(self.news_container.find(
             "ul", class_="inline").find_all("li")[1].text.split("/")[1])
 
-    def get_news(self, save=False, output="dumps.json"):
-        newslist = []
+    def get_news(self):
+
         for news in self.news_list:
             date = news.find("div").text.strip().replace(".", "/")
             text = news.find("a").text.strip()
             link = news.find("a").get("href").replace("¬", "&not")
             link = self.base_url + link
-            newslist.append(
-                {"date": date,
-                 "text": text,
-                 "link": link}
-            )
-        if save:
-            newsdict = {}
-            for i in range(len(newslist)):
-                newsdict[i] = newslist[i]
-
-            with open(output, "w") as file:
-                json_obj = json.dumps(newsdict)
-                file.write(json_obj)
-
-            print(file)
-
-        return newslist
+            dc.add_news(date, text, link)
 
 
 url = "https://www.fump.ufmg.br/noticias.aspx"
@@ -47,6 +32,8 @@ soup = bs(response.text, "html.parser")
 last_page = int(soup.find(id="contentPlaceHolder_colLeft").find(
     "ul", class_="inline").find_all("li")[1].text.split("/")[1])
 
-for i in range(5, 0, -1):
+print(last_page)
+for i in range(last_page, 0, -1):
     print("Página", i)
-    Fumpnews(i).get_news(True)
+    Fumpnews(i).get_news()
+
