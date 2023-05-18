@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.sql import exists
+from sqlalchemy.sql import exists, delete
 from datetime import datetime
 
 engine = create_engine("sqlite:///test.db", echo=True)
@@ -32,3 +32,8 @@ def add_news(date_, title_, link_):
             date_, '%d/%m/%Y'), title=title_, link=link_)
         session.add(news)
         session.commit()
+
+def delete_by_id(id):
+    session.execute(delete(News).where(News.id == id))
+    session.commit()
+    print(f"Notícia {id} deletada!")

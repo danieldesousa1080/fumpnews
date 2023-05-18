@@ -1,14 +1,14 @@
-from requests import get
+from requests import get, Session
 from bs4 import BeautifulSoup as bs
-# import json
 import database_config as dc
 
 
 class Fumpnews():
     def __init__(self, page_number=1):
+        self.session = Session()
         self.base_url = "https://www.fump.ufmg.br/"
         self.url = self.base_url + f"noticias.aspx?pag={page_number}"
-        self.response = get(self.url)
+        self.response = self.session.get(self.url)
         self.soup = bs(self.response.text, "html.parser")
 
         self.news_container = self.soup.find(id="contentPlaceHolder_colLeft")
