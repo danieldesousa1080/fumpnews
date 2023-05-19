@@ -20,10 +20,15 @@ class Fumpnews():
 
         for news in self.news_list:
             date = news.find("div").text.strip().replace(".", "/")
-            text = news.find("a").text.strip()
+            title = news.find("a").text.strip()
             link = news.find("a").get("href").replace("¬", "&not")
             link = self.base_url + link
-            dc.add_news(date, text, link)
+
+            news_html = self.session.get(link).text
+            news_soup = bs(news_html,"html.parser")
+            news_text = str(news_soup.find(id="contentPlaceHolder_defaultNewsContainer"))
+
+            dc.add_news(date, title, news_text, link)
 
 
 url = "https://www.fump.ufmg.br/noticias.aspx"

@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists, delete
 from datetime import datetime
 
-engine = create_engine("sqlite:///test.db", echo=True)
+engine = create_engine("sqlite:///teste_html.db", echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
 Base = declarative_base()
@@ -15,6 +15,7 @@ class News(Base):
     id = Column(Integer, primary_key=True)
     date = Column(DateTime)
     title = Column(String)
+    content = Column(String)
     link = Column(String)
 
     def __repr__(self):
@@ -24,12 +25,12 @@ class News(Base):
 Base.metadata.create_all(engine)
 
 
-def add_news(date_, title_, link_):
+def add_news(date_, title_, content_, link_):
     if session.query(exists().where(News.link == f"{link_}")).scalar():
         print("Noticia já cadastrada!")
     else:
         news = News(date=datetime.strptime(
-            date_, '%d/%m/%Y'), title=title_, link=link_)
+            date_, '%d/%m/%Y'), title=title_, content=content_, link=link_)
         session.add(news)
         session.commit()
 
