@@ -18,7 +18,7 @@ class Fumpnews():
 
     def get_news(self):
 
-        for news in self.news_list:
+        for news in self.news_list[::-1]:
             date = news.find("div").text.strip().replace(".", "/")
             title = news.find("a").text.strip()
             link = news.find("a").get("href").replace("¬", "&not")
