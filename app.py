@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy, session
 
 app = Flask(__name__)
@@ -19,21 +19,39 @@ class News(db.Model):
 
 @app.get("/noticias")
 def get_last_news():
-    all_news = News.query.order_by(News.id.desc()).paginate(page=1, per_page=40)
+    args = request.args
+    page = int(args.get("page")) if args.get("page") is not None else 1
+    news_per_page = int(args.get("size")) if args.get("size") is not None else 20
+    
+    all_news = News.query.order_by(News.id.desc()).paginate(page=page, per_page=news_per_page)
+
     d = {}
     for news in all_news:
-        d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
+        d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link, "id":news.id}
 
     return jsonify(d)
 
-@app.get("/noticias/<int:page>")
-def get_news_by_page(page):
-    all_news = News.query.paginate(page=page, per_page=40)
+@app.get("/noticias/<int:news_id>")
+def get_news_by_id(news_id):
+    news = News.query.filter_by(id=news_id).first()
     d = {}
-    for news in all_news[::-1]:
-        d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
+    d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
     return jsonify(d)
 
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+
+@app.get("/noticias/busca/<string:news_title>")
+def get_news_by_title(news_title):
+    args = request.args
+    page = int(args.get("page")) if args.get("page") is not None else 1
+    news_per_page = int(args.get("size")) if args.get("size") is not None else 20
+    all_news = News.query.filter(News.title.like(f"%{news_title}%")).order_by(News.id.desc()).paginate(page=page, per_page=news_per_page)
+    d = {}
+    for news in all_news:
+        d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
+    return jsonify(d)
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', debug=True)

@@ -33,7 +33,7 @@ python scrapper.py
 > O banco será criado na pasta ***instance***.
 
 ## Subindo a API
-Para subir a API, basta rodar o flask.
+Para subir a API, basta executar o arquivo ***app.py***.
 ~~~sh
-flask run
+python app.py
 ~~~
