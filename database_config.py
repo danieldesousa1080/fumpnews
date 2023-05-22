@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists, delete
 from datetime import datetime
 
-engine = create_engine("sqlite:///teste_html.db", echo=True)
+engine = create_engine("sqlite:///instance/teste_html.db", echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
 Base = declarative_base()
