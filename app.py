@@ -1,10 +1,12 @@
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy, session
+from dotenv import dotenv_values
 
+config = dotenv_values()
 app = Flask(__name__)
 app.debug = True
 # O banco de dados precisa estar na pasta instance
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///teste_html.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = config.get("DATABASE_URL")
 
 db = SQLAlchemy(app)
 
@@ -28,7 +30,6 @@ def get_last_news():
     d = {}
     for news in all_news:
         d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link, "id":news.id}
-
     return jsonify(d)
 
 @app.get("/noticias/<int:news_id>")
@@ -51,7 +52,7 @@ def get_news_by_title(news_title):
     d = {}
     for news in all_news:
         d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
-    return jsonify(d)
+    return d
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)

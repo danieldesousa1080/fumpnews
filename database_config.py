@@ -3,8 +3,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists, delete
 from datetime import datetime
+from dotenv import dotenv_values
 
-engine = create_engine("sqlite:///instance/teste_html.db", echo=True)
+config = dotenv_values()
+engine = create_engine(config.get("DATABASE_URL"))
 Session = sessionmaker(bind=engine)
 session = Session()
 Base = declarative_base()

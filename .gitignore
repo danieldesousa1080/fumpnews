@@ -4,3 +4,4 @@ todos
 venv
 *.db
 instance/*
+.env
