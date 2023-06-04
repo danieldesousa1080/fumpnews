@@ -1,11 +1,14 @@
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy, session
 from dotenv import dotenv_values
+from flask_cors import CORS, cross_origin
 
 config = dotenv_values()
 app = Flask(__name__)
+cors = CORS(app)
 app.debug = True
 # O banco de dados precisa estar na pasta instance (sqlite)
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SQLALCHEMY_DATABASE_URI'] = config.get("DATABASE_URL")
 
 db = SQLAlchemy(app)
@@ -20,6 +23,7 @@ class News(db.Model):
 
 
 @app.get("/noticias")
+@cross_origin()
 def get_last_news():
     args = request.args
     page = int(args.get("page")) if args.get("page") is not None else 1

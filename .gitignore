@@ -1,7 +1,6 @@
-*.json
 __pycache__
 todos
 venv
-*.db
 instance/*
 .env
+.vscode
