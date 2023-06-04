@@ -1,6 +1,6 @@
 from requests import get, Session
 from bs4 import BeautifulSoup as bs
-import database_config as dc
+import scrapper.database_config as dc
 
 
 class Fumpnews():

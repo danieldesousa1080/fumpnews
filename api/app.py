@@ -5,7 +5,7 @@ from dotenv import dotenv_values
 config = dotenv_values()
 app = Flask(__name__)
 app.debug = True
-# O banco de dados precisa estar na pasta instance
+# O banco de dados precisa estar na pasta instance (sqlite)
 app.config['SQLALCHEMY_DATABASE_URI'] = config.get("DATABASE_URL")
 
 db = SQLAlchemy(app)
