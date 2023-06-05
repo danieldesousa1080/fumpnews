@@ -1,21 +1,38 @@
 <template>
   <div id="app">
+    <News v-for="(news) in all_news" :content="news.content" :link="news.link"></News>
     <h1>F{{secondLetter}}mp News</h1>
-    <NewsMarquee/>
+    <NewsMarquee :all_news="all_news"/>
   </div>
 </template>
 
 <script>
+import axios from "axios"
+
 import NewsMarquee from './components/NewsMarquee.vue';
+import News from "./components/News.vue"
 
 export default {
+  data() {
+    return {
+      all_news: null,
+    };
+  },
   methods: {},
   computed: {
       secondLetter() {
           return Math.random() < 0.05 ? "â" : "u";
       }
   },
-  components: { NewsMarquee, Response }
+  components: { NewsMarquee, News },
+
+  mounted () {
+    axios
+    .get('http://localhost:5000/noticias?size=5')
+    .then( response => {
+        this.all_news = response.data
+    })
+    }
 };
 </script>
 
