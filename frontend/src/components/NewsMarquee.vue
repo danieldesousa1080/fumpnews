@@ -9,18 +9,10 @@
 </template>
 
 <script>
-import axios from "axios"
 
 export default {
-    data() {
-    return {
-      all_news: null,
-    };
-  },
-    mounted () {
-    axios
-    .get('http://localhost:5000/noticias?size=5')
-    .then( response => (this.all_news = response.data))
+    props: {
+        all_news: Object
     }
 }
 
