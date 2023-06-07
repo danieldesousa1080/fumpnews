@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <News v-for="(news) in all_news" :content="news.content" :link="news.link"></News>
+    <!-- <News v-for="(news) in all_news" :content="news.content" :link="news.link"></News> -->
     <h1>F{{secondLetter}}mp News</h1>
     <NewsMarquee :all_news="all_news"/>
   </div>

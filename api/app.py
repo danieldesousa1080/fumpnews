@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy, session
 from dotenv import dotenv_values
 from flask_cors import CORS, cross_origin
+from scrapper import get_last_news_from_page
 
 config = dotenv_values()
 app = Flask(__name__)
@@ -57,6 +58,22 @@ def get_news_by_title(news_title):
     for news in all_news:
         d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
     return d
+
+@app.post("/noticias/update")
+def update_database():
+    data = request.form
+    if data.get("secret") == config.get("API_SECRET"):
+        number_of_pages = int(data.get("range"))
+        get_last_news_from_page(number_of_pages)
+
+        return {
+            "Message": f"success"
+        }
+    
+    return {
+        "Message":"not allowed"
+    }
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
