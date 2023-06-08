@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -11,10 +11,13 @@
     "axios": "^1.4.0",
     "sass": "^1.62.1",
     "vue": "^3.3.2",
+    "vue-resource": "^1.5.3",
     "vue-router": "^4.2.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
+    "eslint": "^8.42.0",
+    "eslint-plugin-vue": "^9.14.1",
     "vite": "^4.3.5"
   }
 }

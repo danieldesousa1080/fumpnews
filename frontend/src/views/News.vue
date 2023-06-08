@@ -43,8 +43,5 @@ export default {
         img {
             display: none;
         }
-        // table {
-        //     display: none;
-        // }
     }
 </style>
