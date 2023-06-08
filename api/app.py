@@ -11,6 +11,7 @@ app.debug = True
 # O banco de dados precisa estar na pasta instance (sqlite)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SQLALCHEMY_DATABASE_URI'] = config.get("DATABASE_URL")
+app.config['JSON_SORT_KEYS'] = False
 
 db = SQLAlchemy(app)
 
@@ -35,14 +36,14 @@ def get_last_news():
     d = {}
     for news in all_news:
         d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link, "id":news.id}
-    return jsonify(d)
+    return d
 
 @app.get("/noticias/<int:news_id>")
 def get_news_by_id(news_id):
     news = News.query.filter_by(id=news_id).first()
     d = {}
     d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
-    return jsonify(d)
+    return d
 
 if __name__ == "__main__":
     with app.app_context():
