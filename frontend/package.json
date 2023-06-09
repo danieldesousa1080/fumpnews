@@ -8,7 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@phosphor-icons/vue": "^2.1.4",
     "axios": "^1.4.0",
+    "moment": "^2.29.4",
     "sass": "^1.62.1",
     "vue": "^3.3.2",
     "vue-resource": "^1.5.3",

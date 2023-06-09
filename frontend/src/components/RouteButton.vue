@@ -1,5 +1,5 @@
 <template>
-    <router-link to="noticias" @mouseenter.native="(event) => {console.log(event)}">Todas as noticias</router-link>
+    <router-link to="noticias">Todas as noticias</router-link>
 </template>
 
 <script>
