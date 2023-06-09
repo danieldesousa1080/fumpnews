@@ -68,12 +68,12 @@ def update_database():
         get_last_news_from_page(number_of_pages)
 
         return {
-            "Message": f"success"
+            "Message": f"success!"
         }
-    
-    return {
-        "Message":"not allowed"
-    }
+    else:
+        return {
+            "Message":"not allowed!"
+        }
 
 
 if __name__ == "__main__":
