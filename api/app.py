@@ -41,13 +41,10 @@ def get_last_news():
 
 @app.get("/noticias/<int:news_id>")
 def get_news_by_id(news_id):
-    news = News.query.filter_by(id=news_id).first()
+    news = News.query.filter_by(id=int(news_id)).first()
     d = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
-    return d
-
-if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
+    return jsonify(d)
+    
 
 @app.get("/noticias/busca/<string:news_title>")
 def get_news_by_title(news_title):
@@ -80,4 +77,7 @@ def update_database():
 
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
+
     app.run(host='0.0.0.0', debug=True)
