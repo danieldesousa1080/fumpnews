@@ -33,16 +33,16 @@ def get_last_news():
     
     all_news = News.query.order_by(News.id.desc()).paginate(page=page, per_page=news_per_page)
 
-    d = {}
+    list_obj = []
     for news in all_news:
-        d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link, "id":news.id}
-    return d
+        d = {"date": news.date, "title":news.title, "content":news.content, "link":news.link, "id":news.id}
+        list_obj.append(d)
+    return list_obj
 
 @app.get("/noticias/<int:news_id>")
 def get_news_by_id(news_id):
     news = News.query.filter_by(id=news_id).first()
-    d = {}
-    d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
+    d = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
     return d
 
 if __name__ == "__main__":
@@ -55,10 +55,11 @@ def get_news_by_title(news_title):
     page = int(args.get("page")) if args.get("page") is not None else 1
     news_per_page = int(args.get("size")) if args.get("size") is not None else 20
     all_news = News.query.filter(News.title.like(f"%{news_title}%")).order_by(News.id.desc()).paginate(page=page, per_page=news_per_page)
-    d = {}
+    list_obj = []
     for news in all_news:
-        d[news.id] = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
-    return d
+        d = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
+        list_obj.append(d)
+    return list_obj
 
 @app.post("/noticias/update")
 def update_database():
@@ -72,7 +73,9 @@ def update_database():
         }
     
     return {
-        "Message":"not allowed"
+        "Message":"not allowed",
+        "segredo":config.get("API_SECRET"),
+        "você tentou":data.get("secret")
     }
 
 

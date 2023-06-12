@@ -42,6 +42,7 @@ export default {
       axios
       .get('http://localhost:5000/noticias?size=20')
       .then( response => {
+        console.log(response)
           this.all_news = response.data
       })
       }
