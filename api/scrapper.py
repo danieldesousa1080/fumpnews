@@ -5,6 +5,7 @@ import database_config as dc
 
 class Fumpnews():
     def __init__(self, page_number=1):
+        print("Raspando página", page_number)
         self.session = Session()
         self.base_url = "https://www.fump.ufmg.br/"
         self.url = self.base_url + f"noticias.aspx?pag={page_number}"
@@ -23,10 +24,33 @@ class Fumpnews():
             title = news.find("a").text.strip()
             link = news.find("a").get("href").replace("¬", "&not")
             link = self.base_url + link
+            print(f"{title} | {link}")
 
             news_html = self.session.get(link).text
             news_soup = bs(news_html,"html.parser")
-            news_text = str(news_soup.find(id="contentPlaceHolder_defaultNewsContainer"))
+
+            # Organizando o html
+            news_body = news_soup.find(id="contentPlaceHolder_defaultNewsContainer")
+
+
+            # Removendo todas as imagens
+            for img in news_body.find_all("img"):
+                img.decompose()
+
+            # Removendo a primeira tabela (Compartilhar e Tweet)
+            try:
+                news_body.find_all("table")[0].decompose()
+            except:
+                ...
+                
+            # Mudando os links internos
+            for l in news_body.find_all("a"):
+                try:
+                    l["href"] = l["href"].replace("../","http://www.fump.ufmg.br/")
+                except:
+                    ...
+
+            news_text = news_body.__str__()
 
             dc.add_news(date, title, news_text, link)
 
@@ -40,7 +64,6 @@ last_page = int(soup.find(id="contentPlaceHolder_colLeft").find(
 
 def get_last_news_from_page(page):
     for i in range(page, 0, -1):
-        print("Página", i)
         Fumpnews(i).get_news()
 
 if __name__ == "__main__":
