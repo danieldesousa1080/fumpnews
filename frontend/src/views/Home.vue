@@ -42,11 +42,15 @@
   
     mounted () {
       axios
-      .get('http://localhost:5000/noticias?size=5')
+      .get('http://localhost:5001/noticias?size=5')
       .then( response => {
           console.log(response)
           this.all_news = response.data
       })
+
+      const el = this.$refs.News
+
+      console.log(el)
       }
   };
 </script>

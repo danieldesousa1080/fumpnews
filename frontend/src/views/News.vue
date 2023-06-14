@@ -10,11 +10,13 @@
                         <strong> <ph-article :size="20" /> {{ news.title }}</strong>
                         <p>{{ format_date(news.date) }}</p>
                 </div>
+                <button @click="()=>get_next_page()" class="more-news">Mais notícias</button>
             </div>
                 <div v-if="current_news.content == null">
                 </div>
-                <div v-else class="news-viewer" v-html="current_news.content"></div>
-                <a v-if="current_news.content !== null" :href="current_news.link" target="blank" class="link-flutuante">Abrir no site</a>
+                <div v-else class="news-viewer-container">
+                    <div class="news-viewer" v-html="current_news.content"></div>
+                </div>
             </div>
     </div>
 </template>
@@ -26,6 +28,7 @@ import moment from 'moment';
 export default {
     data() {
       return {
+        current_page: 1,
         all_news: null,
         current_news: {
             "content": null
@@ -38,28 +41,31 @@ export default {
            return moment(String(value)).format('DD/MM/YYYY')
           }
         },
-        removerHrefCodigoHTML(codigoHTML) {
-            const padrao = /href\s*=\s*"[^"]*"/g;
-            const novoCodigoHTML = codigoHTML.replace(padrao, '');
-            return novoCodigoHTML;
-        },
         set_current_news(id){
             axios
-            .get('http://localhost:5000/noticias/' + id)
+            .get('http://localhost:5001/noticias/' + id)
             .then( response => {
                 this.current_news = {
                     "id": response.data.id,
-                    "content": this.removerHrefCodigoHTML(response.data.content),
+                    "content": response.data.content,
                     "link": response.data.link
                 }
-                console.log(this.current_news.content)
 
             })
         },
+        get_next_page(){
+            this.current_page++
+            axios.get(`http://localhost:5001/noticias?page=${this.current_page}&?size=20`)
+            .then(
+                response => {
+                    this.all_news = [...this.all_news, ...response.data]
+                }
+            )
+        }
     },
     mounted () {
       axios
-      .get('http://localhost:5000/noticias?size=20')
+      .get('http://localhost:5001/noticias?page=1&size=20')
       .then( response => {
           this.all_news = response.data
       })
@@ -68,9 +74,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-    a {
-        color: black;
-        text-decoration: none;
+    @import url("../assets/reset.css");
+
+    *{
+        margin: 0px;
+        padding: 0px;
     }
     .news-container {
         display: flex;
@@ -115,7 +123,7 @@ export default {
         display: grid;
         grid-template-columns:.4fr .6fr;
         width: 90%;
-        height: 80vh;
+        height: 80vh!important;
     }
 
     .news-list {
@@ -129,14 +137,18 @@ export default {
         
     }
 
-    .news-viewer {
-        border: 2px solid #c9c9c9;
-        margin: 20px;
-        border-radius: 10px;
+    .news-viewer-container {
         height: 100%;
+        max-height: 70vh;
+        padding: 40px;
+        border: 2px solid #c9c9c9;
         overflow-y: scroll;
-        padding-left: 20px;
-        padding-right: 20px;
+        margin: 20px;
+        
+    }
+    
+    .news-viewer {
+        border-radius: 10px;
     }
 
     .news {
@@ -175,18 +187,20 @@ export default {
         .line16 {
             display: none;
         }
+
+        a {
+            color: red!important;
+        }
     }
 
-    .link-flutuante {
-        position: absolute;
-        border: 2px green solid;
-        background-color: lightgreen;
-        width: 100px;
-        padding: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        right: 140px;
-        bottom: 80px;
+    .more-news {
+        width: 150px;
+        height: 100px!important;
+        border-radius: 0px;
+        border: none;
+        padding: 5px;
+        background-color:gray;
+        color: white!important;
+        cursor: pointer;
     }
 </style>
