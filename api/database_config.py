@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists, delete
+from sqlalchemy_utils import database_exists, create_database
 from datetime import datetime
 from dotenv import dotenv_values
 
@@ -10,6 +11,9 @@ engine = create_engine(config.get("DATABASE_URL"))
 Session = sessionmaker(bind=engine)
 session = Session()
 Base = declarative_base()
+
+if not database_exists(engine.url):
+    create_database(engine.url)
 
 
 class News(Base):
