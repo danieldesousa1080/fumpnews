@@ -2,17 +2,19 @@
     <div class = "news-container">
         <div class="header">
             <router-link class="home-button" to="/"><ph-house :size="25" /></router-link>
+            <div class="search"><ph-magnifying-glass :size="25" /><input type="text" placeholder="buscar"></div>
             <div class="title">Todas as notícias</div>
         </div>
         <div class="main">
             <div class="news-list">
-                <div class="news" v-for="(news) in all_news" @click="()=>set_current_news(news.id)">
+                <div class="news" v-for="(news) in all_news" @click="()=>set_current_news(news.id)" :class="current_news.id == news.id ? 'active-news': ''">
                         <strong> <ph-article :size="20" /> {{ news.title }}</strong>
                         <p>{{ format_date(news.date) }}</p>
                 </div>
                 <button @click="()=>get_next_page()" class="more-news">Mais notícias</button>
             </div>
                 <div v-if="current_news.content == null">
+                    
                 </div>
                 <div v-else class="news-viewer-container">
                     <div class="news-viewer" v-html="current_news.content"></div>
@@ -43,7 +45,7 @@ export default {
         },
         set_current_news(id){
             axios
-            .get('http://localhost:5001/noticias/' + id)
+            .get('http://localhost:5000/noticias/' + id)
             .then( response => {
                 this.current_news = {
                     "id": response.data.id,
@@ -55,7 +57,7 @@ export default {
         },
         get_next_page(){
             this.current_page++
-            axios.get(`http://localhost:5001/noticias?page=${this.current_page}&?size=20`)
+            axios.get(`http://localhost:5000/noticias?page=${this.current_page}&?size=20`)
             .then(
                 response => {
                     this.all_news = [...this.all_news, ...response.data]
@@ -65,7 +67,7 @@ export default {
     },
     mounted () {
       axios
-      .get('http://localhost:5001/noticias?page=1&size=20')
+      .get('http://localhost:5000/noticias?page=1&size=20')
       .then( response => {
           this.all_news = response.data
       })
@@ -118,6 +120,20 @@ export default {
         justify-content: center;
     }
 
+    .search {
+        display: flex;
+        flex-wrap: nowrap;
+        background-color: #c9c9c9;
+        align-items: center;
+        height: 40px;
+        margin: none;
+        padding: 0px 5px 0px 5px;
+        border-radius: 10px;
+
+        input {
+            height: 50%;
+        }
+    }
     .main {
         padding-top: 60px;
         display: grid;
@@ -163,6 +179,7 @@ export default {
         border-radius: 10px;
         color: #000;
         text-decoration: none;
+        transition: .5s ease;
 
         strong {
             display: flex;
@@ -202,5 +219,9 @@ export default {
         background-color:gray;
         color: white!important;
         cursor: pointer;
+    }
+
+    .active-news {
+        background-color: lightgreen;
     }
 </style>
