@@ -42,7 +42,7 @@ def get_last_news():
 @app.get("/noticias/<int:news_id>")
 def get_news_by_id(news_id):
     news = News.query.filter_by(id=int(news_id)).first()
-    d = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
+    d = {"date": news.date, "title":news.title, "content":news.content, "link":news.link, "id":news.id}
     return jsonify(d)
     
 
@@ -54,7 +54,7 @@ def get_news_by_title(news_title):
     all_news = News.query.filter(News.title.like(f"%{news_title}%")).order_by(News.id.desc()).paginate(page=page, per_page=news_per_page)
     list_obj = []
     for news in all_news:
-        d = {"date": news.date, "title":news.title, "content":news.content, "link":news.link}
+        d = {"date": news.date, "title":news.title, "content":news.content, "link":news.link, "id":news.id}
         list_obj.append(d)
     return list_obj
 
@@ -80,4 +80,4 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
 
-    app.run(host='0.0.0.0', debug=True, port=5001)
+    app.run(host='0.0.0.0', debug=True, port=5000)
