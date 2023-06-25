@@ -17,6 +17,7 @@
                     
                 </div>
                 <div v-else class="news-viewer-container">
+                    <a class="open-site" :href="current_news.link" target="blank" ><ph-arrow-square-out :size="26" /></a>
                     <div class="news-viewer" v-html="current_news.content"></div>
                 </div>
             </div>
@@ -33,7 +34,8 @@ export default {
         current_page: 1,
         all_news: null,
         current_news: {
-            "content": null
+            "content": null,
+            id: null
         }
       };
     },
@@ -44,17 +46,21 @@ export default {
           }
         },
         set_current_news(id){
-            axios
-            .get('http://localhost:5000/noticias/' + id)
+            if (this.current_news.id != id){
+                axios
+                .get('http://localhost:5000/noticias/' + id)
             .then( response => {
-                this.current_news = {
-                    "id": response.data.id,
-                    "content": response.data.content,
-                    "link": response.data.link
-                }
-
-            })
-        },
+                    this.current_news = {
+                        "id": response.data.id,
+                        "content": response.data.content,
+                        "link": response.data.link
+                    }
+                })
+            }
+            
+            }
+            
+        ,
         get_next_page(){
             this.current_page++
             axios.get(`http://localhost:5000/noticias?page=${this.current_page}&?size=20`)
@@ -81,6 +87,11 @@ export default {
     *{
         margin: 0px;
         padding: 0px;
+        list-style: none;
+        text-decoration: none;
+        svg {
+            color: #fff;
+        }
     }
     .news-container {
         display: flex;
@@ -154,9 +165,11 @@ export default {
     }
 
     .news-viewer-container {
+        display: flex;
+        flex-direction: column;
         height: 100%;
         max-height: 70vh;
-        padding: 40px;
+        
         border: 2px solid #c9c9c9;
         overflow-y: scroll;
         margin: 20px;
@@ -165,6 +178,7 @@ export default {
     
     .news-viewer {
         border-radius: 10px;
+        padding: 40px;
     }
 
     .news {
@@ -182,8 +196,8 @@ export default {
         transition: .5s ease;
 
         strong {
-            display: flex;
-            align-items: center;
+            display: grid;
+            grid-template-columns: .1fr .8fr .1fr;
 
             svg {
                 padding-right: 5px;
@@ -223,5 +237,22 @@ export default {
 
     .active-news {
         background-color: lightgreen;
+    }
+
+    .open-site {
+        display: flex;
+        min-width: 40px;
+        min-height: 40px;
+        border-radius: 50%;
+        margin: 10px 10px 0px 0px;
+        align-items: center;
+        justify-content: center;
+        justify-self: center;
+        background-color: black;
+        position: fixed;
+        svg {
+            fill: white !important;
+        }
+        align-self: flex-end;
     }
 </style>
