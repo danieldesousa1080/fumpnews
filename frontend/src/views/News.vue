@@ -2,7 +2,7 @@
     <div class = "news-container">
         <div class="header">
             <router-link class="home-button" to="/"><ph-house :size="25" /></router-link>
-            <div class="search"><ph-magnifying-glass :size="25" /><input type="text" placeholder="buscar"></div>
+            <div class="search"><ph-magnifying-glass :size="25" /><form @submit.prevent="handleSubmit"><input type="text" placeholder="buscar" v-model="query"></form></div>
             <div class="title">Todas as notícias</div>
         </div>
         <div class="main">
@@ -36,7 +36,8 @@ export default {
         current_news: {
             "content": null,
             id: null
-        }
+        },
+        query: ''
       };
     },
     methods: {
@@ -57,8 +58,7 @@ export default {
                     }
                 })
             }
-            
-            }
+        }
             
         ,
         get_next_page(){
@@ -69,6 +69,13 @@ export default {
                     this.all_news = [...this.all_news, ...response.data]
                 }
             )
+        },
+        handleSubmit() {
+            axios
+            .get(`http://localhost:5000/noticias/busca/${this.query}?size=20`)
+            .then(response => {
+                this.all_news = response.data
+            })
         }
     },
     mounted () {
