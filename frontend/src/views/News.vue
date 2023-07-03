@@ -1,8 +1,15 @@
 <template>
     <div class = "news-container">
         <div class="header">
+            <div class="menu-buttons">
             <router-link class="home-button" to="/"><ph-house :size="25" /></router-link>
-            <div class="search"><ph-magnifying-glass :size="25" /><form @submit.prevent="handleSubmit"><input type="text" placeholder="buscar" v-model="query"></form></div>
+            <div class="search">
+                    <button @click="showSearchField()"><ph-magnifying-glass :size="25" /></button>
+                    <form @submit.prevent="handleSubmit">
+                        <input type="text" placeholder="buscar" v-model="query" :style="searchButtonActive ? 'display:block;' : 'display:none;'">
+                    </form>
+                </div>
+            </div>
             <div class="title">Todas as notícias</div>
         </div>
         <div class="main">
@@ -37,7 +44,8 @@ export default {
             "content": null,
             id: null
         },
-        query: ''
+        query: '',
+        searchButtonActive: false
       };
     },
     methods: {
@@ -58,9 +66,7 @@ export default {
                     }
                 })
             }
-        }
-            
-        ,
+        },
         get_next_page(){
             this.current_page++
             axios.get(`http://localhost:5000/noticias?page=${this.current_page}&?size=20`)
@@ -72,10 +78,14 @@ export default {
         },
         handleSubmit() {
             axios
-            .get(`http://localhost:5000/noticias/busca/${this.query}?size=20`)
+            .get(`http://localhost:5000/noticias?search=${this.query}&size=20`)
             .then(response => {
                 this.all_news = response.data
             })
+        },
+        showSearchField(){
+            this.searchButtonActive = true
+            console.log(this.searchButtonActive)
         }
     },
     mounted () {
@@ -109,30 +119,37 @@ export default {
     }
 
     .header {
+        padding-top: 10px;
         display: flex;
-        margin-top: 20px;
         width: 100%;
         justify-content: space-around;
+        .menu-buttons {
+            display: flex;
+            gap: 8px;
+        }
     }
     
     .home-button {
         width: 40px;
         height: 40px;
-        border-radius: 100%;
-        background-color: #D9D9D9;
+        border-radius:5px;
+        background-color: black;
         display: flex;
         justify-content: center;
         align-items: center;
         font-size: 1rem;
         padding: 0px;
         margin: 0px;
+        svg {
+            fill: white;
+        }
     }
 
     .title {
         width: 80vw;
         height: 40px;
-        border-radius: 20px;
-        background-color: #D9D9D9;
+        border-radius: 5px;
+        // background-color: #D9D9D9;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -141,15 +158,43 @@ export default {
     .search {
         display: flex;
         flex-wrap: nowrap;
-        background-color: #c9c9c9;
+        background-color: black;
         align-items: center;
         height: 40px;
         margin: none;
         padding: 0px 5px 0px 5px;
-        border-radius: 10px;
+        border-radius: 5px;
+        color: white;
+        // width: 200px ;
 
         input {
-            height: 50%;
+            display: none;
+            height: 20px;
+            background-color: black;
+            color: white;
+            border: none;
+            outline: none;
+            width: 180px;
+
+            @keyframes open-search {
+                from {
+                    width: 0px;
+                }
+                to {
+                    width: 180px;
+                }
+            }
+
+            animation: open-search 1s;
+            ::placeholder {
+                color: white;
+                opacity: .5s;
+            }
+
+        }
+
+        svg {
+            fill: white;
         }
     }
     .main {
@@ -214,7 +259,7 @@ export default {
     :deep {
 
         * {
-            color: #000!important;
+            color: #000;
         }
         img {
             display: none;

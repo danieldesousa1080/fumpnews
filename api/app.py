@@ -30,8 +30,9 @@ def get_last_news():
     args = request.args
     page = int(args.get("page")) if args.get("page") is not None else 1
     news_per_page = int(args.get("size")) if args.get("size") is not None else 20
-    
-    all_news = News.query.order_by(News.id.desc()).paginate(page=page, per_page=news_per_page)
+    query = args.get("search") if args.get("search") is not None else ""
+
+    all_news = News.query.filter(News.title.like(f"%{query}%") | News.content.like(f"%{query}%")).order_by(News.id.desc()).paginate(page=page, per_page=news_per_page)
 
     list_obj = []
     for news in all_news:
@@ -44,19 +45,6 @@ def get_news_by_id(news_id):
     news = News.query.filter_by(id=int(news_id)).first()
     d = {"date": news.date, "title":news.title, "content":news.content, "link":news.link, "id":news.id}
     return jsonify(d)
-    
-
-@app.get("/noticias/busca/<string:news_title>")
-def get_news_by_title(news_title):
-    args = request.args
-    page = int(args.get("page")) if args.get("page") is not None else 1
-    news_per_page = int(args.get("size")) if args.get("size") is not None else 20
-    all_news = News.query.filter(News.title.like(f"%{news_title}%")).order_by(News.id.desc()).paginate(page=page, per_page=news_per_page)
-    list_obj = []
-    for news in all_news:
-        d = {"date": news.date, "title":news.title, "content":news.content, "link":news.link, "id":news.id}
-        list_obj.append(d)
-    return list_obj
 
 @app.post("/noticias/update")
 def update_database():
