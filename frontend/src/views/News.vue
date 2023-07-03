@@ -222,7 +222,7 @@ export default {
         height: 100%;
         max-height: 70vh;
         
-        border: 2px solid #c9c9c9;
+        background-color: white;
         overflow-y: scroll;
         margin: 20px;
         
@@ -238,26 +238,28 @@ export default {
         cursor: pointer;
         display: flex;
         justify-content: space-between;
-        background-color: #D9D9D9;
+        background-color: black;
         padding: 20px;
         margin: 10px;
         width: 95%;
         border-radius: 10px;
-        color: #000;
         text-decoration: none;
         transition: .5s ease;
 
         strong {
             display: grid;
             grid-template-columns: .1fr .8fr .1fr;
-
-            svg {
+            color: white;
+        }
+        svg {
+                fill: white;
                 padding-right: 5px;
-            }
+        }
+        p {
+            color: white;
         }
     }
     :deep {
-
         * {
             color: #000;
         }
@@ -289,6 +291,15 @@ export default {
 
     .active-news {
         background-color: lightgreen;
+        strong {
+            color: #000;
+        }
+        svg {
+            fill: #000;
+        }
+        p {
+            color: #000;
+        }
     }
 
     .open-site {
