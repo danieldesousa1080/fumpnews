@@ -42,7 +42,7 @@
   
     mounted () {
       axios
-      .get('http://localhost:5000/noticias?size=5')
+      .get('http://192.168.100.7:5000/noticias?size=5')
       .then( response => {
           console.log(response)
           this.all_news = response.data

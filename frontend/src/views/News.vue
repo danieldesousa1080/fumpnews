@@ -13,21 +13,25 @@
             <div class="title">Todas as notícias</div>
         </div>
         <div class="main">
-            <div class="news-list">
+            <div class="news-list" :class="current_news.content == null ? '' : 'hide-on-small-screen'">
                 <div class="news" v-for="(news) in all_news" @click="()=>set_current_news(news.id)" :class="current_news.id == news.id ? 'active-news': ''">
                         <strong> <ph-article :size="20" /> {{ news.title }}</strong>
                         <p>{{ format_date(news.date) }}</p>
                 </div>
                 <button @click="()=>get_next_page()" class="more-news">Mais notícias</button>
             </div>
+            <div class="right-side">
                 <div v-if="current_news.content == null">
                     
                 </div>
                 <div v-else class="news-viewer-container">
+                    <button class="btn-close-news" @click="close_current_news">X</button>
                     <a class="open-site" :href="current_news.link" target="blank" ><ph-arrow-square-out :size="26" /></a>
                     <div class="news-viewer" v-html="current_news.content"></div>
                 </div>
             </div>
+            </div>
+                
     </div>
 </template>
 
@@ -57,7 +61,7 @@ export default {
         set_current_news(id){
             if (this.current_news.id != id){
                 axios
-                .get('http://localhost:5000/noticias/' + id)
+                .get('http://192.168.100.7:5000/noticias/' + id)
             .then( response => {
                     this.current_news = {
                         "id": response.data.id,
@@ -67,9 +71,15 @@ export default {
                 })
             }
         },
+        close_current_news(){
+            this.current_news = {
+                content: null,
+                id: null
+            }
+        },
         get_next_page(){
             this.current_page++
-            axios.get(`http://localhost:5000/noticias?page=${this.current_page}&?size=20`)
+            axios.get(`http://192.168.100.7:5000/noticias?page=${this.current_page}&?size=20`)
             .then(
                 response => {
                     this.all_news = [...this.all_news, ...response.data]
@@ -78,7 +88,7 @@ export default {
         },
         handleSubmit() {
             axios
-            .get(`http://localhost:5000/noticias?search=${this.query}&size=20`)
+            .get(`http://192.168.100.7:5000/noticias?search=${this.query}&size=20`)
             .then(response => {
                 this.all_news = response.data
             })
@@ -90,7 +100,7 @@ export default {
     },
     mounted () {
       axios
-      .get('http://localhost:5000/noticias?page=1&size=20')
+      .get('http://192.168.100.7:5000/noticias?page=1&size=20')
       .then( response => {
           this.all_news = response.data
       })
@@ -109,6 +119,38 @@ export default {
         svg {
             color: #fff;
         }
+
+
+        @media (max-width: 900px) {
+            .hide-on-small-screen {
+                display: none!important;
+            }
+
+            .main {
+                // background-color: red;
+                display: flex!important;
+                padding: 0px!important;
+                height: 90vh!important;
+            }
+            .news-list {
+                width: 100vw;
+                padding: none;
+            }
+
+            .news-viewer-container {
+                padding: none;
+                width: 100%;
+                height: 100%!important;
+                margin: none;
+            }
+
+            .news-viewer {
+                height: 100%!important;
+            }
+            .btn-close-news {
+                display: inline-block!important;
+            }
+        }
     }
     .news-container {
         display: flex;
@@ -121,7 +163,7 @@ export default {
     .header {
         padding-top: 10px;
         display: flex;
-        width: 100%;
+        width: 90%;
         justify-content: space-around;
         .menu-buttons {
             display: flex;
@@ -165,7 +207,6 @@ export default {
         padding: 0px 5px 0px 5px;
         border-radius: 5px;
         color: white;
-        // width: 200px ;
 
         input {
             display: none;
@@ -174,14 +215,14 @@ export default {
             color: white;
             border: none;
             outline: none;
-            width: 180px;
+            width: 150px;
 
             @keyframes open-search {
                 from {
                     width: 0px;
                 }
                 to {
-                    width: 180px;
+                    width: 150px;
                 }
             }
 
@@ -202,7 +243,7 @@ export default {
         display: grid;
         grid-template-columns:.4fr .6fr;
         width: 90%;
-        height: 80vh!important;
+        height: 80vh;
     }
 
     .news-list {
@@ -276,6 +317,14 @@ export default {
         a {
             color: red!important;
         }
+    }
+
+    .btn-close-news {
+        display: none;
+        width: 40px;
+        height: 40px;
+        background-color: lightcoral;
+        border: color white;
     }
 
     .more-news {
